@@ -12,7 +12,7 @@ import sqlite3
 
 DATABASE_LOCATION = "sqlite:///my_played_tracks.sqlite"
 USER_ID = "davidcarrevedo"
-TOKEN = "BQC-0O-vLus_SoeO5LKDQunhpGDaJlKl-MOxERUjydVnueZcinihHZp3krx292_a73Iqkt084kC0pQefTH18cY5TIvY8qQzPeVbUxgmZipoT2_RGfKbu4VgsXFiH8Mq3odSES6EPt0dmvGT1asCw1DNGGgfGbuDsIrnlDjmGjGQ-idz-Ssi0sAxzHUQ"
+TOKEN = "BQD1-cyEVrXKO5UnZzj_ausPV0tyEHYacBhqAk9pVD1JbfSG83tdkSy_FMd9M3hNzuh9pfb2KIQ9Gd2Qsnn4tFukmyd0GINmnR9o76-wsgete-rhGOvEZhwjQqYFy_nPfw4pgrNG6PoJYH6CSQCRuwcamufjfwujHac1Get8L2h7ZRE8XEgVjISRpvo"
 
 
 # Generar token aqui: https://developer.spotify.com/console/get-recently-played/
@@ -87,3 +87,28 @@ if __name__ == "__main__":
     # Validacion
     if check_if_valid_data(song_df):
         print("Data valida, proceder a cargarla")
+
+
+    #Load
+    engine = sqlalchemy.create_engine(DATABASE_LOCATION)
+    conn = sqlite3.connect('my_played_tracks.sqlite')
+    cursor = conn.cursor()
+
+    sql_query = """
+    CREATE TABLE IF NOT EXISTS my_played_tracks(
+        song_name VARCHAR (200),
+        artist_name VARCHAR (200),
+        played_at VARCHAR (200),
+        timestamp VARCHAR (200),
+        CONSTRAINT primary_key_constraint PRIMARY KEY (played_at)
+    )
+    """
+
+    cursor.execute(sql_query)
+    print("Base de datos abierta con exito")
+
+    try:
+        song_df.to_sql("my_played_tracks", engine, index=False, if_exists='append')
+    except:
+        print("data already exists in the database")
+    
